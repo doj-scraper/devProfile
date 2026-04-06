@@ -1,304 +1,369 @@
 "use client"
 
-import { useState } from "react"
-import { projects, profileData, skillCategories } from "@/lib/portfolio-data"
+import { useState, useEffect, useRef } from "react"
+import { 
+  profileData, 
+  services, 
+  certModules, 
+  capstoneProjects, 
+  whyNowItems 
+} from "@/lib/portfolio-data"
 
 interface GuiFrontendProps {
   onExitGui: () => void
 }
 
 export function GuiFrontend({ onExitGui }: GuiFrontendProps) {
-  const [activeSection, setActiveSection] = useState<"home" | "projects" | "about" | "contact">("home")
-  const [selectedProject, setSelectedProject] = useState<string | null>(null)
+  const [activeSection, setActiveSection] = useState<string>("hero")
+  const [openModule, setOpenModule] = useState<string>("MOD_01")
+  const observerRef = useRef<IntersectionObserver | null>(null)
 
-  const navItems = [
-    { id: "home" as const, label: "HOME" },
-    { id: "projects" as const, label: "PROJECTS" },
-    { id: "about" as const, label: "ABOUT" },
-    { id: "contact" as const, label: "CONTACT" },
-  ]
+  useEffect(() => {
+    // Scroll reveal animation
+    const reveals = document.querySelectorAll('.reveal')
+    observerRef.current = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible')
+          observerRef.current?.unobserve(e.target)
+        }
+      })
+    }, { threshold: 0.12 })
+    
+    reveals.forEach(r => observerRef.current?.observe(r))
+    
+    return () => observerRef.current?.disconnect()
+  }, [])
+
+  const scrollToSection = (id: string) => {
+    setActiveSection(id)
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
-    <div className="gui-container">
-      {/* Top Navigation Bar */}
-      <header className="gui-header">
-        <div className="gui-logo">[ CRODA ]</div>
-        <nav className="gui-nav">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                setActiveSection(item.id)
-                setSelectedProject(null)
-              }}
-              className={activeSection === item.id ? "active" : ""}
-            >
-              {item.label}
-            </button>
-          ))}
-        </nav>
-        <button className="gui-exit" onClick={onExitGui} title="Return to terminal">
-          [ EXIT_GUI ]
-        </button>
-      </header>
+    <div className="gui-wrap">
+      {/* Global Texture Overlays */}
+      <div className="gui-grid-overlay" />
+      <div className="gui-scanlines" />
 
-      {/* Main Content Area */}
-      <main className="gui-main">
-        {activeSection === "home" && (
-          <section className="gui-section gui-home">
-            <div className="home-hero">
-              <h1>{profileData.name}</h1>
-              <p className="hero-tagline">{profileData.title}</p>
-              <p className="hero-desc">{profileData.tagline}</p>
-              <div className="hero-cta">
-                <button onClick={() => setActiveSection("projects")}>View Projects</button>
-                <button onClick={() => setActiveSection("contact")} className="secondary">
-                  Get in Touch
-                </button>
-              </div>
-            </div>
-            <div className="home-featured">
-              <h2>Featured Work</h2>
-              <div className="featured-grid">
-                {projects.slice(0, 3).map((project) => (
-                  <div
-                    key={project.id}
-                    className="featured-card"
-                    onClick={() => {
-                      setActiveSection("projects")
-                      setSelectedProject(project.id)
-                    }}
-                  >
-                    <div className="card-status">{project.status}</div>
-                    <h3>{project.shortTitle}</h3>
-                    <p>{project.description.slice(0, 100)}...</p>
-                    <div className="card-tech">
-                      {project.techStack.slice(0, 3).map((tech) => (
-                        <span key={tech}>{tech}</span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {activeSection === "projects" && (
-          <section className="gui-section gui-projects">
-            {selectedProject ? (
-              <ProjectDetail
-                project={projects.find((p) => p.id === selectedProject)!}
-                onBack={() => setSelectedProject(null)}
-              />
-            ) : (
-              <>
-                <h1>Projects</h1>
-                <p className="section-desc">A selection of technical work and creative experiments.</p>
-                <div className="projects-grid">
-                  {projects.map((project) => (
-                    <div key={project.id} className="project-card" onClick={() => setSelectedProject(project.id)}>
-                      <div className="project-header">
-                        <h3>{project.title}</h3>
-                        <span className={`status status-${project.status.toLowerCase()}`}>{project.status}</span>
-                      </div>
-                      <p>{project.description}</p>
-                      <div className="project-tech">
-                        {project.techStack.map((tech) => (
-                          <span key={tech}>{tech}</span>
-                        ))}
-                      </div>
-                      <div className="project-features">
-                        <h4>Key Features:</h4>
-                        <ul>
-                          {project.features.slice(0, 3).map((feature, i) => (
-                            <li key={i}>{feature}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </section>
-        )}
-
-        {activeSection === "about" && (
-          <section className="gui-section gui-about">
-            <h1>About</h1>
-            <div className="about-content">
-              <div className="about-bio">
-                <h2>{profileData.name}</h2>
-                <p className="bio-title">{profileData.title}</p>
-                <div className="bio-text">
-                  {profileData.bio.split("\n\n").map((para, i) => (
-                    <p key={i}>{para}</p>
-                  ))}
-                </div>
-              </div>
-              <div className="about-skills">
-                <h2>Technical Skills</h2>
-                {skillCategories.map((category) => (
-                  <div key={category.name} className="skill-category">
-                    <h3>{category.name}</h3>
-                    <div className="skill-bars">
-                      {category.skills.map((skill) => (
-                        <div key={skill.name} className="skill-bar">
-                          <div className="skill-label">
-                            <span>{skill.name}</span>
-                            <span>{skill.level}%</span>
-                          </div>
-                          <div className="skill-track">
-                            <div className="skill-fill" style={{ width: `${skill.level}%` }} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {activeSection === "contact" && (
-          <section className="gui-section gui-contact">
-            <h1>Contact</h1>
-            <p className="section-desc">Open to opportunities and collaborations.</p>
-            <div className="contact-grid">
-              <div className="contact-info">
-                <h2>Get in Touch</h2>
-                <div className="contact-links">
-                  <a href={`mailto:${profileData.email}`} className="contact-link">
-                    <span className="contact-icon">@</span>
-                    <span>{profileData.email}</span>
-                  </a>
-                  <a
-                    href={`https://${profileData.github}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="contact-link"
-                  >
-                    <span className="contact-icon">&lt;/&gt;</span>
-                    <span>{profileData.github}</span>
-                  </a>
-                  <a
-                    href={`https://${profileData.linkedin}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="contact-link"
-                  >
-                    <span className="contact-icon">in</span>
-                    <span>{profileData.linkedin}</span>
-                  </a>
-                </div>
-              </div>
-              <div className="contact-form">
-                <h2>Send a Message</h2>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    alert("Message functionality would be connected here!")
-                  }}
-                >
-                  <div className="form-group">
-                    <label htmlFor="name">Name</label>
-                    <input type="text" id="name" name="name" required />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input type="email" id="email" name="email" required />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="message">Message</label>
-                    <textarea id="message" name="message" rows={4} required />
-                  </div>
-                  <button type="submit">Send Message</button>
-                </form>
-              </div>
-            </div>
-          </section>
-        )}
-      </main>
-
-      {/* Persistent Mini Terminal Bar */}
-      <MiniTerminalBar />
-    </div>
-  )
-}
-
-function ProjectDetail({ project, onBack }: { project: (typeof projects)[0]; onBack: () => void }) {
-  return (
-    <div className="project-detail">
-      <button className="back-btn" onClick={onBack}>
-        &larr; Back to Projects
-      </button>
-      <div className="detail-header">
-        <h1>{project.title}</h1>
-        <span className={`status status-${project.status.toLowerCase()}`}>{project.status}</span>
-      </div>
-      <div className="detail-tech">
-        {project.techStack.map((tech) => (
-          <span key={tech}>{tech}</span>
-        ))}
-      </div>
-      <p className="detail-desc">{project.description}</p>
-      <div className="detail-features">
-        <h2>Features</h2>
-        <ul>
-          {project.features.map((feature, i) => (
-            <li key={i}>{feature}</li>
-          ))}
-        </ul>
-      </div>
-      {(project.repo || project.liveUrl) && (
-        <div className="detail-links">
-          {project.repo && (
-            <a href={`https://${project.repo}`} target="_blank" rel="noopener noreferrer">
-              View Repository
-            </a>
-          )}
-          {project.liveUrl && (
-            <a href={`https://${project.liveUrl}`} target="_blank" rel="noopener noreferrer">
-              Live Demo
-            </a>
-          )}
+      {/* Navigation */}
+      <nav className="gui-nav-bar">
+        <div className="nav-logo">
+          <div className="nav-dot" />
+          CHRISTOPHER<span>.AI</span>
         </div>
-      )}
+        <ul className="nav-links">
+          <li><button onClick={() => scrollToSection('services')}>SERVICES</button></li>
+          <li><button onClick={() => scrollToSection('about')}>ABOUT</button></li>
+          <li><button onClick={() => scrollToSection('cert')}>CERTIFICATION</button></li>
+          <li><button onClick={() => scrollToSection('capstone')}>CAPSTONE</button></li>
+          <li><button onClick={() => scrollToSection('contact')}>CONTACT</button></li>
+        </ul>
+        <div className="nav-ctas">
+          <button className="btn-secondary" onClick={onExitGui}>EXIT_GUI</button>
+          <button className="btn-primary" onClick={() => scrollToSection('contact')}>BOOK CALL</button>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="gui-hero" id="hero">
+        <div className="hero-inner">
+          <div className="hero-content">
+            <div className="hero-sys-tag">
+              <span className="tag-dot" />
+              SYS_ID: CAI-2026 // {profileData.location.toUpperCase()} // ACTIVE
+            </div>
+            <h1 className="hero-headline">
+              ENGINEER<br />
+              THE <span className="accent">AGENTIC</span><br />
+              <span className="red">FUTURE</span>
+            </h1>
+            <p className="hero-sub">{profileData.tagline}</p>
+            <p className="hero-body">{profileData.bio}</p>
+            <div className="hero-ctas">
+              <button className="btn-primary-lg" onClick={() => scrollToSection('cert')}>
+                EXPLORE CERTIFICATION
+              </button>
+              <button className="btn-secondary-lg" onClick={() => scrollToSection('services')}>
+                VIEW SERVICES
+              </button>
+            </div>
+          </div>
+
+          <div className="hero-terminal">
+            <div className="terminal-bar">
+              <div className="t-dot r" />
+              <div className="t-dot y" />
+              <div className="t-dot g" />
+              <div className="terminal-title">PIPELINE // LIVE</div>
+            </div>
+            <div className="terminal-line">
+              <span className="prompt">❯ </span>
+              <span className="cmd">swarm init --agents 5 --mode async</span>
+            </div>
+            <div className="terminal-line"><span className="out">✓ WEAVER       [PM]       ONLINE</span></div>
+            <div className="terminal-line"><span className="out">✓ NAVIGATOR    [ARCH]     ONLINE</span></div>
+            <div className="terminal-line"><span className="out">✓ SCRUTINEER   [QA]       ONLINE</span></div>
+            <div className="terminal-line"><span className="out">✓ LEDGER       [DATA]     ONLINE</span></div>
+            <div className="terminal-line"><span className="out">✓ CHRONICLER   [SYNTH]    ONLINE</span></div>
+            <div className="terminal-line"><span className="comment">// shared_state: BACKENDREPORT.md</span></div>
+            <div className="terminal-line">
+              <span className="prompt">❯ </span>
+              <span className="cmd">deploy --env production --hardened</span>
+            </div>
+            <div className="terminal-line"><span className="out">✓ QUANTUM_LAYER hardened</span></div>
+            <div className="terminal-line"><span className="out">✓ NIST-aligned checks passed</span></div>
+            <div className="terminal-line">
+              <span className="out-red">⬤ PIPELINE RUNNING</span> 
+              <span className="cursor">█</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stat Bar */}
+      <div className="stat-bar reveal">
+        <div className="stat-item">
+          <div className="stat-val">5+</div>
+          <div className="stat-label">AGENTS / PIPELINE</div>
+        </div>
+        <div className="stat-item">
+          <div className="stat-val">NIST</div>
+          <div className="stat-label">ALIGNED PRACTICES</div>
+        </div>
+        <div className="stat-item">
+          <div className="stat-val">2026</div>
+          <div className="stat-label">WHY NOW</div>
+        </div>
+        <div className="stat-item">
+          <div className="stat-val">∞</div>
+          <div className="stat-label">SCALE // ASYNC</div>
+        </div>
+      </div>
+
+      {/* Services Section */}
+      <section className="gui-section reveal" id="services">
+        <div className="section-header">
+          <div className="section-tag">01 // SERVICES</div>
+          <h2 className="section-title">WHAT I <span>BUILD</span></h2>
+          <div className="section-num">SVC_MAP // v2.4</div>
+        </div>
+
+        <div className="services-grid">
+          {services.map((svc) => (
+            <div 
+              key={svc.id} 
+              className={`svc-card ${svc.variant === 'red' ? 'red-card' : ''} ${svc.variant === 'green' ? 'green-card' : ''}`}
+              data-num={svc.id}
+            >
+              <span className="svc-icon">{svc.icon}</span>
+              <div className="svc-title">{svc.title}</div>
+              <span className={`svc-tag ${svc.variant}`}>{svc.tag}</span>
+              <div className="svc-desc">{svc.description}</div>
+              <span className={`svc-badge ${svc.variant}`}>{svc.badge}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Why Now Section */}
+      <section className="gui-section reveal" id="about">
+        <div className="section-header">
+          <div className="section-tag">02 // CONTEXT</div>
+          <h2 className="section-title">WHY <span>2026</span></h2>
+          <div className="section-num">THREAT_MATRIX // ACTIVE</div>
+        </div>
+        <div className="why-grid">
+          {whyNowItems.map((item, i) => (
+            <div key={i} className="why-cell">
+              <div className="why-cell-tag">{item.tag}</div>
+              <div className="why-cell-title">{item.title}</div>
+              <div className="why-cell-body">{item.description}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Certification Section */}
+      <section className="gui-section reveal" id="cert">
+        <div className="section-header">
+          <div className="section-tag">03 // TRAINING</div>
+          <h2 className="section-title">SECURE AGENTIC AI <span>PRACTITIONER</span></h2>
+          <div className="section-num">CERT_PROG // v1.0</div>
+        </div>
+
+        <div className="cert-panel">
+          <div className="cert-modules">
+            <p className="cert-intro">
+              The only certification built around production agentic systems. Not theory. Not toy demos. 
+              You&apos;ll design, build, harden, and deploy a multi-agent system with real security constraints 
+              — and walk away with a capstone project you can show.
+            </p>
+
+            <div className="module-list">
+              {certModules.map((mod) => (
+                <div 
+                  key={mod.id}
+                  className={`module ${openModule === mod.id ? 'open' : ''}`}
+                  onClick={() => setOpenModule(openModule === mod.id ? '' : mod.id)}
+                >
+                  <div className="module-head">
+                    <span className="module-num">{mod.id}</span>
+                    <span className="module-name">{mod.name}</span>
+                    <span className="module-arrow">❯</span>
+                  </div>
+                  <div className="module-body">
+                    <div className="module-body-inner">{mod.description}</div>
+                  </div>
+                  <div className="progress-track">
+                    <div className="progress-fill" style={{ width: `${mod.progress}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="cert-badge-section">
+            <div className="cert-badge-panel">
+              <span className="cert-badge-icon">⬡</span>
+              <div className="cert-badge-title">SECURE AGENTIC AI<br />PRACTITIONER</div>
+              <div className="cert-badge-sub">
+                CERTIFIED // 2026<br />
+                QUANTUM-HARDENED<br />
+                NIST-ALIGNED
+              </div>
+              <div className="cert-divider" />
+              <div className="cert-stat">
+                <div className="cert-stat-item">
+                  <div className="cert-stat-val">5</div>
+                  <span className="cert-stat-label">MODULES</span>
+                </div>
+                <div className="cert-stat-item">
+                  <div className="cert-stat-val">1</div>
+                  <span className="cert-stat-label">CAPSTONE</span>
+                </div>
+                <div className="cert-stat-item">
+                  <div className="cert-stat-val">∞</div>
+                  <span className="cert-stat-label">ACCESS</span>
+                </div>
+              </div>
+              <button className="btn-primary-lg full-width" onClick={() => scrollToSection('contact')}>
+                ENROLL NOW
+              </button>
+            </div>
+
+            <div className="code-block">
+              <pre>
+                <span className="c">// Capstone deliverable contract</span>{"\n"}
+                <span className="k">export</span> <span className="k">interface</span> <span className="f">CapstoneArtifact</span> {"{"}{"\n"}
+                {"  "}agents:     <span className="s">AgentConfig[]</span>;{"\n"}
+                {"  "}sharedState:<span className="s">StateContract</span>;{"\n"}
+                {"  "}qaGate:     <span className="s">ScrutineerReport</span>;{"\n"}
+                {"  "}deployment: <span className="s">HardenedEnv</span>;{"\n"}
+                {"  "}casestudy:  <span className="s">CASESTUDY_MD</span>;{"\n"}
+                {"}"}
+              </pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Capstone Projects Section */}
+      <section className="gui-section reveal" id="capstone">
+        <div className="section-header">
+          <div className="section-tag">04 // EXAMPLES</div>
+          <h2 className="section-title">CAPSTONE <span>PROJECTS</span></h2>
+          <div className="section-num">PROD_EXAMPLES // 2026</div>
+        </div>
+
+        <div className="capstone-grid">
+          {capstoneProjects.map((project, i) => (
+            <div key={i} className="cap-card">
+              <div className="cap-title">{project.title}</div>
+              <span className="cap-tag">{project.tag}</span>
+              <div className="cap-desc">{project.description}</div>
+              <div className="cap-metric">
+                <div className="cap-metric-val">{project.metricValue}</div>
+                <div className="cap-metric-label">{project.metricLabel}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA Banner */}
+      <div className="cta-banner reveal" id="contact">
+        <div className="cta-inner">
+          <div>
+            <div className="cta-headline">READY TO <span>ENGINEER</span><br />YOUR AI SYSTEMS?</div>
+            <div className="cta-sub">{profileData.location} · Available globally · Response within 24hrs</div>
+          </div>
+          <div className="cta-buttons">
+            <a href={`mailto:${profileData.email}`} className="btn-primary-lg">
+              BOOK DISCOVERY CALL
+            </a>
+            <button className="btn-secondary-lg" onClick={() => scrollToSection('cert')}>
+              VIEW CERTIFICATION
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="gui-footer">
+        <div className="footer-inner">
+          <div className="footer-logo">CHRISTOPHER<span>.AI</span></div>
+          <div className="footer-links">
+            <button onClick={() => scrollToSection('services')}>SERVICES</button>
+            <button onClick={() => scrollToSection('cert')}>CERTIFICATION</button>
+            <button onClick={() => scrollToSection('capstone')}>CAPSTONE</button>
+            <button onClick={() => scrollToSection('contact')}>CONTACT</button>
+          </div>
+          <div className="footer-sig">
+            {profileData.location.toUpperCase()} · NIST-ALIGNED · QUANTUM-HARDENED<br />
+            <span>© 2026 CHRISTOPHER // ALL SYSTEMS OPERATIONAL</span>
+          </div>
+        </div>
+      </footer>
+
+      {/* Mini Terminal Bar */}
+      <MiniTerminalBar onExitGui={onExitGui} />
     </div>
   )
 }
 
-function MiniTerminalBar() {
+function MiniTerminalBar({ onExitGui }: { onExitGui: () => void }) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [input, setInput] = useState("")
   const [output, setOutput] = useState<string[]>([
-    '<span class="success">GUI mode active</span> | Type "exit" to return to terminal',
+    '<span class="out">GUI mode active</span> | Type "exit" to return to terminal',
   ])
 
   const handleCommand = (cmd: string) => {
     const trimmed = cmd.trim().toLowerCase()
     if (trimmed === "exit") {
-      // Trigger exit through window
-      const exitFn = (window as unknown as { exitGui?: () => void }).exitGui
-      if (exitFn) exitFn()
+      onExitGui()
       return
     }
     if (trimmed === "help") {
       setOutput((prev) => [
         ...prev,
         `<span class="prompt">❯</span> ${cmd}`,
-        '<span class="info">Mini-terminal commands: exit, help, status</span>',
+        '<span class="out">Mini-terminal commands: exit, help, status</span>',
       ])
     } else if (trimmed === "status") {
       setOutput((prev) => [
         ...prev,
         `<span class="prompt">❯</span> ${cmd}`,
-        '<span class="success">System: CLIENT_GUI | All systems nominal</span>',
+        '<span class="out">System: CLIENT_GUI | All agents nominal</span>',
       ])
     } else {
-      setOutput((prev) => [...prev, `<span class="prompt">❯</span> ${cmd}`, `<span class="error">Command not available in GUI mode. Type "exit" to access full terminal.</span>`])
+      setOutput((prev) => [
+        ...prev, 
+        `<span class="prompt">❯</span> ${cmd}`, 
+        `<span class="out-red">Command not available in GUI mode. Type "exit" for full terminal.</span>`
+      ])
     }
     setInput("")
   }
@@ -306,8 +371,8 @@ function MiniTerminalBar() {
   return (
     <div className={`mini-terminal ${isExpanded ? "expanded" : ""}`}>
       <div className="mini-terminal-bar" onClick={() => setIsExpanded(!isExpanded)}>
-        <span className="mini-status">system running optimally</span>
-        <span className="mini-hint">{isExpanded ? "click to collapse" : "click to open command palette"}</span>
+        <span className="mini-status">⬤ system operational</span>
+        <span className="mini-hint">{isExpanded ? "click to collapse" : "click for command palette"}</span>
         <span className="mini-cursor">█</span>
       </div>
       {isExpanded && (

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { JetBrains_Mono } from 'next/font/google'
+import { JetBrains_Mono, Orbitron, Rajdhani, Share_Tech_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import './terminal.css'
@@ -9,9 +9,26 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono"
 });
 
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  variable: "--font-orbitron"
+});
+
+const rajdhani = Rajdhani({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-rajdhani"
+});
+
+const shareTechMono = Share_Tech_Mono({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-share-tech"
+});
+
 export const metadata: Metadata = {
-  title: 'CRODA_SYS - Christopher Rodriguez Portfolio',
-  description: 'Interactive terminal-based portfolio with immersive environments',
+  title: 'CHRISTOPHER.AI - AI Systems Architect',
+  description: 'Engineer the Agentic Future. Multi-agent orchestration, quantum-hardened infrastructure, and secure deployment pipelines.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -39,7 +56,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${jetbrainsMono.variable} font-mono antialiased`}>
+      <body className={`${jetbrainsMono.variable} ${orbitron.variable} ${rajdhani.variable} ${shareTechMono.variable} font-mono antialiased`}>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
