@@ -1,0 +1,355 @@
+/* Zellij Terminal Portfolio Styles */
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .wireframe {
+    animation: none !important;
+  }
+}
+
+/* Canvas Container */
+.canvas-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+}
+
+.canvas-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Wireframe CSS Animation */
+.wireframe {
+  display: none;
+  position: absolute;
+  width: 200vw;
+  height: 200vh;
+  left: -50vw;
+  top: 0;
+  background-image: linear-gradient(rgba(80, 80, 80, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(80, 80, 80, 0.3) 1px, transparent 1px);
+  background-size: 40px 40px;
+  transform: perspective(600px) rotateX(70deg);
+  transform-origin: top;
+  animation: scroll 4s linear infinite;
+  z-index: 1;
+}
+
+@keyframes scroll {
+  from {
+    transform: perspective(600px) rotateX(70deg) translateY(0);
+  }
+  to {
+    transform: perspective(600px) rotateX(70deg) translateY(40px);
+  }
+}
+
+/* Global System Header Controls */
+.controls {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #000;
+  padding: 8px 15px;
+  z-index: 20;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #222;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.sys-text {
+  color: #666;
+  font-weight: bold;
+  margin-right: 20px;
+  white-space: nowrap;
+}
+
+.controls button {
+  background: transparent;
+  border: 1px solid #444;
+  color: #888;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 13px;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+
+.controls button:hover {
+  background: #111;
+  color: #ccc;
+}
+
+.controls button.active {
+  border-color: #aaff00;
+  color: #aaff00;
+  background: #0a1100;
+}
+
+/* Mobile responsive header */
+@media (max-width: 768px) {
+  .controls {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+  .sys-text {
+    margin-right: 10px;
+    font-size: 12px;
+  }
+  .controls button {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+}
+
+/* Core Zellij Container */
+.zellij {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -45%);
+  width: 75vw;
+  height: 65vh;
+  max-width: 1200px;
+  background: #1b112c;
+  border-left: 2px solid #ff0044;
+  border-right: 2px solid #aaff00;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  z-index: 10;
+  box-shadow: 12px 12px 0px rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.zellij-header {
+  padding: 8px 12px;
+  background: #0d0817;
+  border-bottom: 1px solid #333;
+  font-weight: bold;
+  color: #aaff00;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Zellij Body - Split Pane Layout */
+.zellij-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Strider Pane (File Tree) */
+.strider-pane {
+  width: 250px;
+  border-right: 1px solid #ff0044;
+  padding: 16px;
+  font-size: 13px;
+  overflow-y: auto;
+  flex-shrink: 0;
+  color: #888;
+  background: #150d22;
+}
+
+.tree-root {
+  color: #ff0044;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.tree-dir {
+  color: #aaff00;
+  margin-top: 4px;
+}
+
+.tree-item {
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+.tree-item:hover {
+  color: #fff;
+  background: rgba(170, 255, 0, 0.1);
+}
+
+.tree-item.indent {
+  margin-left: 20px;
+}
+
+/* Terminal Pane */
+.terminal-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  overflow: hidden;
+}
+
+.terminal-output {
+  flex: 1;
+  overflow-y: auto;
+  color: #fff;
+  line-height: 1.6;
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.prompt {
+  color: #aaff00;
+  font-weight: bold;
+}
+
+.input-line {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.input-line input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: monospace;
+  font-size: 14px;
+  outline: none;
+  flex: 1;
+  margin-left: 4px;
+}
+
+.input-line input::placeholder {
+  color: #555;
+}
+
+/* Output styling */
+.output {
+  margin-top: 8px;
+  color: #ccc;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.error {
+  color: #ff0044;
+}
+
+.success {
+  color: #aaff00;
+}
+
+.info {
+  color: #00aaff;
+}
+
+/* Mobile responsive container */
+@media (max-width: 1024px) {
+  .zellij {
+    width: 90vw;
+    height: 70vh;
+    box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.9);
+  }
+  .zellij-header {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  .strider-pane {
+    width: 200px;
+    font-size: 12px;
+    padding: 12px;
+  }
+  .terminal-pane {
+    padding: 16px;
+  }
+  .terminal-output {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .strider-pane {
+    width: 160px;
+    font-size: 11px;
+    padding: 10px;
+  }
+  .tree-item.indent {
+    margin-left: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .zellij {
+    width: 95vw;
+    height: 75vh;
+    max-width: none;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+    border-left-width: 1px;
+    border-right-width: 1px;
+  }
+  .zellij-header {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+  .strider-pane {
+    width: 120px;
+    font-size: 10px;
+    padding: 8px;
+  }
+  .tree-item.indent {
+    margin-left: 8px;
+  }
+  .terminal-pane {
+    padding: 12px;
+  }
+  .terminal-output {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  .prompt {
+    font-size: 11px;
+  }
+}
+
+/* Scrollbar styling */
+.terminal-output::-webkit-scrollbar,
+.strider-pane::-webkit-scrollbar {
+  width: 6px;
+}
+
+.terminal-output::-webkit-scrollbar-track,
+.strider-pane::-webkit-scrollbar-track {
+  background: #1b112c;
+}
+
+.terminal-output::-webkit-scrollbar-thumb,
+.strider-pane::-webkit-scrollbar-thumb {
+  background: #aaff00;
+  border-radius: 3px;
+}
+
+.terminal-output::-webkit-scrollbar-thumb:hover,
+.strider-pane::-webkit-scrollbar-thumb:hover {
+  background: #ff0044;
+}
