@@ -8,13 +8,10 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .wireframe {
-    animation: none !important;
-  }
 }
 
-/* Canvas Container */
-.canvas-container {
+/* Starfield Background Container */
+.starfield-container {
   position: fixed;
   top: 0;
   left: 0;
@@ -23,99 +20,35 @@
   z-index: 1;
 }
 
-.canvas-container canvas {
+.starfield-container canvas {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-/* Wireframe CSS Animation */
-.wireframe {
-  display: none;
-  position: absolute;
-  width: 200vw;
-  height: 200vh;
-  left: -50vw;
-  top: 0;
-  background-image: linear-gradient(rgba(80, 80, 80, 0.3) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(80, 80, 80, 0.3) 1px, transparent 1px);
-  background-size: 40px 40px;
-  transform: perspective(600px) rotateX(70deg);
-  transform-origin: top;
-  animation: scroll 4s linear infinite;
-  z-index: 1;
-}
-
-@keyframes scroll {
-  from {
-    transform: perspective(600px) rotateX(70deg) translateY(0);
-  }
-  to {
-    transform: perspective(600px) rotateX(70deg) translateY(40px);
-  }
-}
-
-/* Global System Header Controls */
-.controls {
+/* Top System Bar - Clock */
+.system-bar {
   position: fixed;
-  top: 0;
   left: 0;
-  width: 100%;
-  background: #000;
-  padding: 8px 15px;
-  z-index: 20;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid #222;
-  align-items: center;
-  box-sizing: border-box;
-}
-
-.sys-text {
-  color: #666;
-  font-weight: bold;
-  margin-right: 20px;
-  white-space: nowrap;
-}
-
-.controls button {
+  right: 0;
+  z-index: 25;
   background: transparent;
-  border: 1px solid #444;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 20px;
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+}
+
+.system-bar.top {
+  top: 0;
+}
+
+.clock {
+  font-size: 14px;
+  font-weight: 500;
   color: #888;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-family: monospace;
-  font-size: 13px;
-  transition: 0.2s;
-  white-space: nowrap;
-}
-
-.controls button:hover {
-  background: #111;
-  color: #ccc;
-}
-
-.controls button.active {
-  border-color: #aaff00;
-  color: #aaff00;
-  background: #0a1100;
-}
-
-/* Mobile responsive header */
-@media (max-width: 768px) {
-  .controls {
-    padding: 6px 10px;
-    gap: 8px;
-  }
-  .sys-text {
-    margin-right: 10px;
-    font-size: 12px;
-  }
-  .controls button {
-    padding: 5px 10px;
-    font-size: 11px;
-  }
+  letter-spacing: 0.15em;
 }
 
 /* Core Zellij Container */
@@ -123,33 +56,113 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -45%);
-  width: 75vw;
-  height: 65vh;
-  max-width: 1200px;
-  background: #1b112c;
-  border-left: 2px solid #ff0044;
-  border-right: 2px solid #aaff00;
-  border-top: 1px solid #333;
-  border-bottom: 1px solid #333;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 70vh;
+  max-width: 1300px;
+  background: rgba(27, 17, 44, 0.85);
+  backdrop-filter: blur(8px);
   z-index: 10;
-  box-shadow: 12px 12px 0px rgba(0, 0, 0, 0.9);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-.zellij-header {
-  padding: 8px 12px;
-  background: #0d0817;
-  border-bottom: 1px solid #333;
-  font-weight: bold;
-  color: #aaff00;
-  font-size: 14px;
+/* Top Black Bar - Zellij Style */
+.zellij-top-bar {
+  background: #000;
+  padding: 6px 16px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 16px;
+  font-size: 13px;
   flex-shrink: 0;
+  border-bottom: 1px solid #333;
+}
+
+.session-name {
+  color: #888;
+  font-weight: 500;
+}
+
+.tab-container {
+  display: flex;
+  gap: 8px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #888;
+}
+
+.tab.active {
+  border-color: #aaff00;
+  color: #fff;
+}
+
+.tab-icon {
+  color: #666;
+  font-size: 12px;
+}
+
+.tab-name {
+  color: #aaff00;
+  font-weight: 600;
+}
+
+.bar-right {
+  margin-left: auto;
+  color: #666;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.base-badge {
+  background: #aaff00;
+  color: #000;
+  padding: 2px 8px;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+/* Pane Headers - Red for strider, Yellow for terminal */
+.pane-headers {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.pane-header {
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border-bottom: 2px solid;
+}
+
+.pane-header.strider-header {
+  width: 250px;
+  flex-shrink: 0;
+  background: rgba(255, 0, 68, 0.08);
+  border-bottom-color: #ff0044;
+  border-right: 1px solid #ff0044;
+  color: #ff0044;
+}
+
+.pane-header.terminal-header {
+  flex: 1;
+  background: rgba(170, 255, 0, 0.05);
+  border-bottom-color: #aaff00;
+  color: #aaff00;
+}
+
+.pane-label {
+  opacity: 0.9;
 }
 
 /* Zellij Body - Split Pane Layout */
@@ -159,43 +172,119 @@
   overflow: hidden;
 }
 
-/* Strider Pane (File Tree) */
+/* Strider Pane (File Tree) - Zellij Style */
 .strider-pane {
   width: 250px;
   border-right: 1px solid #ff0044;
-  padding: 16px;
+  padding: 12px 16px;
   font-size: 13px;
   overflow-y: auto;
   flex-shrink: 0;
   color: #888;
-  background: #150d22;
+  background: rgba(21, 13, 34, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.tree-root {
-  color: #ff0044;
-  font-weight: bold;
+.strider-find {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.find-label {
+  color: #aaff00;
+  font-weight: 700;
+}
+
+.find-icon {
+  color: #666;
+}
+
+.strider-path {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #888;
+}
+
+.path-label {
+  color: #aaff00;
+  font-weight: 700;
+}
+
+.path-value {
+  color: #00aaff;
+}
+
+.strider-help {
+  color: #666;
+  font-size: 11px;
   margin-bottom: 8px;
+}
+
+.key-hint {
+  color: #888;
+}
+
+.strider-files {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .tree-dir {
   color: #aaff00;
-  margin-top: 4px;
-}
-
-.tree-item {
-  cursor: pointer;
-  transition: color 0.2s, background 0.2s;
   padding: 2px 4px;
-  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.15s;
 }
 
-.tree-item:hover {
-  color: #fff;
+.tree-dir:hover {
   background: rgba(170, 255, 0, 0.1);
 }
 
-.tree-item.indent {
-  margin-left: 20px;
+.tree-file {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 4px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  color: #ccc;
+}
+
+.tree-file:hover {
+  background: rgba(170, 255, 0, 0.1);
+  color: #fff;
+}
+
+.file-name {
+  flex: 1;
+}
+
+.file-size {
+  color: #666;
+  font-size: 12px;
+  text-align: right;
+  min-width: 60px;
+}
+
+.strider-footer {
+  padding-top: 8px;
+  border-top: 1px solid #333;
+  color: #ff00ff;
+  font-size: 11px;
+}
+
+.ctrl-hint {
+  color: #00aaff;
+}
+
+.path-hint {
+  color: #aaff00;
 }
 
 /* Terminal Pane */
@@ -203,8 +292,10 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 24px;
+  padding: 16px 24px;
   overflow: hidden;
+  border-left: 1px solid #aaff00;
+  background: rgba(27, 17, 44, 0.4);
 }
 
 .terminal-output {
@@ -215,6 +306,7 @@
   font-size: 14px;
   white-space: pre-wrap;
   word-wrap: break-word;
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
 }
 
 .prompt {
@@ -227,17 +319,18 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
 }
 
 .input-line input {
   background: transparent;
   border: none;
   color: #fff;
-  font-family: monospace;
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
   font-size: 14px;
   outline: none;
   flex: 1;
-  margin-left: 4px;
+  margin-left: 8px;
 }
 
 .input-line input::placeholder {
@@ -245,13 +338,6 @@
 }
 
 /* Output styling */
-.output {
-  margin-top: 8px;
-  color: #ccc;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-
 .error {
   color: #ff0044;
 }
@@ -264,24 +350,69 @@
   color: #00aaff;
 }
 
+/* Bottom Black Bar - Zellij Style */
+.zellij-bottom-bar {
+  background: #000;
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 11px;
+  flex-shrink: 0;
+  border-top: 1px solid #333;
+  flex-wrap: wrap;
+}
+
+.shortcuts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.shortcut {
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.shortcut .key {
+  color: #aaff00;
+}
+
+.gui-boot-btn {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid #ff0044;
+  color: #ff0044;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  transition: 0.2s;
+}
+
+.gui-boot-btn:hover {
+  background: #ff0044;
+  color: #000;
+}
+
 /* Mobile responsive container */
 @media (max-width: 1024px) {
   .zellij {
-    width: 90vw;
-    height: 70vh;
-    box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.9);
+    width: 92vw;
+    height: 75vh;
   }
-  .zellij-header {
-    font-size: 12px;
-    padding: 6px 10px;
+  .pane-header.strider-header {
+    width: 200px;
   }
   .strider-pane {
     width: 200px;
     font-size: 12px;
-    padding: 12px;
+    padding: 10px 12px;
   }
   .terminal-pane {
-    padding: 16px;
+    padding: 12px 16px;
   }
   .terminal-output {
     font-size: 12px;
@@ -289,46 +420,61 @@
 }
 
 @media (max-width: 768px) {
+  .pane-header.strider-header {
+    width: 160px;
+  }
   .strider-pane {
     width: 160px;
     font-size: 11px;
-    padding: 10px;
+    padding: 8px 10px;
   }
-  .tree-item.indent {
-    margin-left: 12px;
+  .zellij-top-bar,
+  .zellij-bottom-bar {
+    padding: 4px 10px;
+    font-size: 10px;
+  }
+  .shortcuts {
+    display: none;
+  }
+  .file-size {
+    display: none;
   }
 }
 
 @media (max-width: 640px) {
   .zellij {
-    width: 95vw;
-    height: 75vh;
-    max-width: none;
-    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
-    border-left-width: 1px;
-    border-right-width: 1px;
+    width: 96vw;
+    height: 80vh;
   }
-  .zellij-header {
-    font-size: 11px;
-    padding: 4px 8px;
+  .pane-header.strider-header {
+    width: 120px;
   }
   .strider-pane {
     width: 120px;
     font-size: 10px;
-    padding: 8px;
+    padding: 6px 8px;
   }
-  .tree-item.indent {
-    margin-left: 8px;
+  .strider-find,
+  .strider-path,
+  .strider-help,
+  .strider-footer {
+    display: none;
   }
   .terminal-pane {
-    padding: 12px;
+    padding: 10px 12px;
   }
   .terminal-output {
     font-size: 11px;
     line-height: 1.4;
   }
-  .prompt {
-    font-size: 11px;
+  .session-name {
+    display: none;
+  }
+  .tab-container {
+    flex: 1;
+  }
+  .bar-right {
+    font-size: 10px;
   }
 }
 
@@ -340,7 +486,7 @@
 
 .terminal-output::-webkit-scrollbar-track,
 .strider-pane::-webkit-scrollbar-track {
-  background: #1b112c;
+  background: rgba(27, 17, 44, 0.5);
 }
 
 .terminal-output::-webkit-scrollbar-thumb,
@@ -352,24 +498,6 @@
 .terminal-output::-webkit-scrollbar-thumb:hover,
 .strider-pane::-webkit-scrollbar-thumb:hover {
   background: #ff0044;
-}
-
-/* GUI Boot Button in Header */
-.gui-boot-btn {
-  margin-left: auto;
-  background: transparent;
-  border: 1px solid #ff0044;
-  color: #ff0044;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-family: monospace;
-  font-size: 13px;
-  transition: 0.2s;
-}
-
-.gui-boot-btn:hover {
-  background: #ff0044;
-  color: #000;
 }
 
 /* Boot Transition Effect */
@@ -814,6 +942,11 @@
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 
 /* Stat Bar */

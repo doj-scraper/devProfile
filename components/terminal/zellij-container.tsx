@@ -3,38 +3,37 @@
 import { useState, useEffect, useCallback } from "react"
 import { Terminal } from "./terminal"
 import { FileTree } from "./file-tree"
-import { BackgroundCanvas } from "./background-canvas"
+import { StarfieldBackground } from "./starfield-background"
 import { GuiFrontend } from "../gui/gui-frontend"
 
-type Environment = "matrix" | "hex" | "wireframe"
 type ViewMode = "SYS_ADMIN" | "CLIENT_GUI" | "BOOTING"
 
 export function ZellijContainer() {
-  const [currentEnv, setCurrentEnv] = useState<Environment>("matrix")
   const [viewMode, setViewMode] = useState<ViewMode>("SYS_ADMIN")
-  const [headerText, setHeaderText] = useState("Christopher Rodriguez - Portfolio")
+  const [currentTime, setCurrentTime] = useState("")
 
+  // Digital clock - HH:MM:SS PST
   useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth
-      if (width < 640) {
-        setHeaderText("Portfolio")
-      } else if (width < 1024) {
-        setHeaderText("Chris Rodriguez - Portfolio")
-      } else {
-        setHeaderText("Christopher Rodriguez - Portfolio")
-      }
+    const updateClock = () => {
+      const now = new Date()
+      const pst = new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        timeZone: "America/Los_Angeles",
+      }).format(now)
+      setCurrentTime(pst.replace(/:/g, "_"))
     }
 
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
+    updateClock()
+    const interval = setInterval(updateClock, 1000)
+    return () => clearInterval(interval)
   }, [])
 
   // Handle GUI boot transition
   const handleBootGui = useCallback(() => {
     setViewMode("BOOTING")
-    // Brief flash effect then switch to GUI
     setTimeout(() => {
       setViewMode("CLIENT_GUI")
     }, 800)
@@ -49,12 +48,6 @@ export function ZellijContainer() {
   useEffect(() => {
     ;(window as unknown as { exitGui: () => void }).exitGui = handleExitGui
   }, [handleExitGui])
-
-  const envButtons: { id: Environment; label: string; title: string }[] = [
-    { id: "matrix", label: "[ ENV: MEM_ALLOC ]", title: "Toggle matrix environment" },
-    { id: "hex", label: "[ ENV: SYS_DUMP ]", title: "Toggle hex dump environment" },
-    { id: "wireframe", label: "[ ENV: TOPO_SCAN ]", title: "Toggle topology scan" },
-  ]
 
   // GUI Mode - Render polished frontend
   if (viewMode === "CLIENT_GUI") {
@@ -77,36 +70,59 @@ export function ZellijContainer() {
   // Terminal Mode (SYS_ADMIN) - Default
   return (
     <div className="zellij-app">
-      <BackgroundCanvas currentEnv={currentEnv} />
+      <StarfieldBackground />
 
-      {/* System Header Controls */}
-      <div className="controls">
-        <span className="sys-text">[ CRODA_SYS ]</span>
-        {envButtons.map((btn) => (
-          <button
-            key={btn.id}
-            onClick={() => setCurrentEnv(btn.id)}
-            className={currentEnv === btn.id ? "active" : ""}
-            title={btn.title}
-          >
-            {btn.label}
-          </button>
-        ))}
-        <button className="gui-boot-btn" onClick={handleBootGui} title="Boot into GUI mode">
-          [ INIT_GUI ]
-        </button>
+      {/* Top System Bar - Clock */}
+      <div className="system-bar top">
+        <span className="clock">{currentTime} PST</span>
       </div>
 
       {/* Zellij Terminal Container */}
       <div className="zellij">
-        <div className="zellij-header">
-          <span>Tab #1 ◫ strider</span>
-          <span>{headerText}</span>
+        {/* Top Black Bar - Zellij Style */}
+        <div className="zellij-top-bar">
+          <span className="session-name">Zellij (croda-portfolio)</span>
+          <div className="tab-container">
+            <span className="tab active">
+              <span className="tab-icon">Tab #1</span>
+              <span className="tab-name">strider</span>
+            </span>
+          </div>
+          <span className="bar-right">Alt &lt;[]&gt; <span className="base-badge">BASE</span></span>
         </div>
 
+        {/* Pane Headers */}
+        <div className="pane-headers">
+          <div className="pane-header strider-header">
+            <span className="pane-label">strider</span>
+          </div>
+          <div className="pane-header terminal-header">
+            <span className="pane-label">Pane #1</span>
+          </div>
+        </div>
+
+        {/* Main Body */}
         <div className="zellij-body">
           <FileTree onCommand={() => {}} />
-          <Terminal currentEnv={currentEnv} onEnvChange={setCurrentEnv} onBootGui={handleBootGui} />
+          <Terminal onBootGui={handleBootGui} />
+        </div>
+
+        {/* Bottom Black Bar - Zellij Style */}
+        <div className="zellij-bottom-bar">
+          <div className="shortcuts">
+            <span className="shortcut">Ctrl + <span className="key">&lt;q&gt;</span> LOCK</span>
+            <span className="shortcut"><span className="key">&lt;p&gt;</span> PANE</span>
+            <span className="shortcut"><span className="key">&lt;t&gt;</span> TAB</span>
+            <span className="shortcut"><span className="key">&lt;n&gt;</span> RESIZE</span>
+            <span className="shortcut"><span className="key">&lt;h&gt;</span> MOVE</span>
+            <span className="shortcut"><span className="key">&lt;s&gt;</span> SEARCH</span>
+            <span className="shortcut"><span className="key">&lt;o&gt;</span> SESSION</span>
+            <span className="shortcut"><span className="key">&lt;q&gt;</span> QUIT</span>
+          </div>
+          <button className="gui-boot-btn" onClick={handleBootGui} title="Boot into GUI mode">
+            [ INIT_GUI ]
+          </button>
+          <span className="bar-right">Alt + &lt;[]&gt; <span className="base-badge">BASE</span></span>
         </div>
       </div>
     </div>

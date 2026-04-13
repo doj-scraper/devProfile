@@ -4,12 +4,10 @@ import { useState, useRef, useEffect, useCallback } from "react"
 import { projects, profileData, buildLogSteps, guiBootSteps } from "@/lib/portfolio-data"
 
 interface TerminalProps {
-  onEnvChange?: (env: string) => void
-  currentEnv: string
   onBootGui?: () => void
 }
 
-export function Terminal({ onEnvChange, currentEnv, onBootGui }: TerminalProps) {
+export function Terminal({ onBootGui }: TerminalProps) {
   const [history, setHistory] = useState<string[]>([
     '<span class="prompt">❯</span> cd ~/projects/portfolio',
     '<span class="prompt">❯</span> source environment.sh',
@@ -175,18 +173,6 @@ Portfolio: <span class="info">${profileData.website}</span>`,
         return ""
       },
     },
-    env: {
-      desc: "Display current environment",
-      fn: () => {
-        const envMap: Record<string, string> = {
-          matrix: "MEM_ALLOC (Dot Matrix)",
-          hex: "SYS_DUMP (Hex Rain)",
-          wireframe: "TOPO_SCAN (Topology)",
-        }
-        return `<span class="success">Current Environment:</span> ${envMap[currentEnv]}
-Use buttons at top to switch environments.`
-      },
-    },
     echo: {
       desc: "Echo text back to terminal",
       fn: (args) => args || "echo: nothing to echo",
@@ -254,7 +240,7 @@ Web: ${profileData.website}
       setCommandHistory((prev) => [...prev, input])
       setHistoryIndex(-1)
     },
-    [currentEnv, isLocked]
+    [isLocked]
   )
 
   // Expose executeCommand globally for the file tree
