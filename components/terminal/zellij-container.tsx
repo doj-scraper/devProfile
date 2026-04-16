@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { Terminal } from "./terminal"
 import { FileTree } from "./file-tree"
-import { StarfieldBackground } from "./starfield-background"
+import { CosmicNetworkBackground } from "./cosmic-network-background"
 import { GuiFrontend } from "../gui/gui-frontend"
 
 type ViewMode = "SYS_ADMIN" | "CLIENT_GUI" | "BOOTING"
@@ -12,7 +12,7 @@ export function ZellijContainer() {
   const [viewMode, setViewMode] = useState<ViewMode>("SYS_ADMIN")
   const [currentTime, setCurrentTime] = useState("")
 
-  // Digital clock - HH:MM:SS PST
+  // Digital clock - HH_MM_SS PST
   useEffect(() => {
     const updateClock = () => {
       const now = new Date()
@@ -70,9 +70,9 @@ export function ZellijContainer() {
   // Terminal Mode (SYS_ADMIN) - Default
   return (
     <div className="zellij-app">
-      <StarfieldBackground />
+      <CosmicNetworkBackground />
 
-      {/* Top System Bar - Clock */}
+      {/* Top System Bar - Clock (right aligned) */}
       <div className="system-bar top">
         <span className="clock">{currentTime} PST</span>
       </div>
@@ -91,13 +91,17 @@ export function ZellijContainer() {
           <span className="bar-right">Alt &lt;[]&gt; <span className="base-badge">BASE</span></span>
         </div>
 
-        {/* Pane Headers */}
+        {/* Pane Headers with Borders */}
         <div className="pane-headers">
           <div className="pane-header strider-header">
+            <span className="border-line red"></span>
             <span className="pane-label">strider</span>
+            <span className="border-line-fill red"></span>
           </div>
           <div className="pane-header terminal-header">
-            <span className="pane-label">Pane #1</span>
+            <span className="border-line yellow"></span>
+            <span className="pane-label">Tab #1</span>
+            <span className="border-line-fill yellow"></span>
           </div>
         </div>
 
