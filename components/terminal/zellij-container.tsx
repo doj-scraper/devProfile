@@ -79,39 +79,25 @@ export function ZellijContainer() {
 
       {/* Zellij Terminal Container */}
       <div className="zellij">
-        {/* Top Black Bar - Zellij Style */}
+        {/* Top Black Bar - Clean Style */}
         <div className="zellij-top-bar">
-          <span className="session-name">Zellij (croda-portfolio)</span>
-          <div className="tab-container">
-            <span className="tab active">
-              <span className="tab-icon">Tab #1</span>
-              <span className="tab-name">strider</span>
-            </span>
-          </div>
-          <span className="bar-right">Alt &lt;[]&gt; <span className="base-badge">BASE</span></span>
+          <span className="terminal-title-text">Terminal (c.Rod_dev_profile)</span>
+          <button className="gui-boot-btn" onClick={handleBootGui} title="Boot into GUI mode">
+            [ INIT_GUI ]
+          </button>
         </div>
 
-        {/* Pane Headers with Borders */}
-        <div className="pane-headers">
-          <div className="pane-header strider-header">
-            <span className="border-line red"></span>
-            <span className="pane-label">strider</span>
-            <span className="border-line-fill red"></span>
-          </div>
-          <div className="pane-header terminal-header">
-            <span className="border-line yellow"></span>
-            <span className="pane-label">Tab #1</span>
-            <span className="border-line-fill yellow"></span>
-          </div>
-        </div>
-
-        {/* Main Body */}
+        {/* Main Body with Bordered Panes */}
         <div className="zellij-body">
-          <FileTree onCommand={() => {}} />
-          <Terminal onBootGui={handleBootGui} />
+          <div className="strider-pane-wrapper">
+            <FileTree onCommand={() => {}} />
+          </div>
+          <div className="terminal-pane-wrapper">
+            <Terminal onBootGui={handleBootGui} />
+          </div>
         </div>
 
-        {/* Bottom Black Bar - Zellij Style */}
+        {/* Bottom Black Bar - Clean Style */}
         <div className="zellij-bottom-bar">
           <div className="shortcuts">
             <span className="shortcut">Ctrl + <span className="key">&lt;q&gt;</span> LOCK</span>
@@ -123,10 +109,6 @@ export function ZellijContainer() {
             <span className="shortcut"><span className="key">&lt;o&gt;</span> SESSION</span>
             <span className="shortcut"><span className="key">&lt;q&gt;</span> QUIT</span>
           </div>
-          <button className="gui-boot-btn" onClick={handleBootGui} title="Boot into GUI mode">
-            [ INIT_GUI ]
-          </button>
-          <span className="bar-right">Alt + &lt;[]&gt; <span className="base-badge">BASE</span></span>
         </div>
       </div>
     </div>

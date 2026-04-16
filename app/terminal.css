@@ -78,138 +78,41 @@
   font-family: 'JetBrains Mono Nerd', var(--font-mono), 'JetBrains Mono', monospace;
 }
 
-/* Top Black Bar - Zellij Style (like screenshot) */
+/* Top Black Bar - Clean Style */
 .zellij-top-bar {
   background: #000;
   padding: 6px 16px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: space-between;
   font-size: 13px;
   flex-shrink: 0;
   border-bottom: 1px solid #222;
   font-family: 'JetBrains Mono Nerd', var(--font-mono), 'JetBrains Mono', monospace;
 }
 
-.session-name {
-  color: #888;
-  font-weight: 500;
-}
-
-.tab-container {
-  display: flex;
-  gap: 8px;
-}
-
-.tab {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 12px;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  color: #888;
-}
-
-.tab.active {
-  border-color: #aaff00;
+.terminal-title-text {
   color: #fff;
-}
-
-.tab-icon {
-  color: #666;
-  font-size: 12px;
-}
-
-.tab-name {
-  color: #aaff00;
-  font-weight: 600;
-}
-
-.bar-right {
-  margin-left: auto;
-  color: #666;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.base-badge {
-  background: #aaff00;
-  color: #000;
-  padding: 2px 8px;
-  font-weight: 700;
-  font-size: 11px;
-}
-
-/* Pane Headers - Red for strider, Yellow for terminal with line borders */
-.pane-headers {
-  display: flex;
-  flex-shrink: 0;
-  background: rgba(10, 10, 14, 0.7);
-}
-
-.pane-header {
-  padding: 0;
-  font-size: 12px;
   font-weight: 500;
-  display: flex;
-  align-items: center;
-  height: 24px;
-  font-family: 'JetBrains Mono Nerd', var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.02em;
 }
 
-/* Border line elements for ——strider—— and ——Tab#1—— effect */
-.border-line {
-  display: inline-block;
-  width: 20px;
-  height: 2px;
-  flex-shrink: 0;
-}
-
-.border-line.red {
-  background: #ff0044;
-}
-
-.border-line.yellow {
-  background: #aaff00;
-}
-
-.border-line-fill {
-  flex: 1;
-  height: 2px;
-}
-
-.border-line-fill.red {
-  background: #ff0044;
-}
-
-.border-line-fill.yellow {
-  background: #aaff00;
-}
-
-.pane-header.strider-header {
+/* Pane Wrappers - Thin encapsulating borders */
+.strider-pane-wrapper {
   width: 250px;
   flex-shrink: 0;
-  background: transparent;
-  border-right: 2px solid #ff0044;
-  color: #ff0044;
-  gap: 8px;
-  padding-left: 0;
+  border: 1px solid #ff0044;
+  display: flex;
+  flex-direction: column;
 }
 
-.pane-header.terminal-header {
+.terminal-pane-wrapper {
   flex: 1;
-  background: transparent;
-  color: #aaff00;
-  gap: 8px;
-  padding-left: 0;
-}
-
-.pane-label {
-  padding: 0 8px;
-  white-space: nowrap;
+  border: 1px solid #aaff00;
+  border-left: none;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Zellij Body - Split Pane Layout */
@@ -219,14 +122,13 @@
   overflow: hidden;
 }
 
-/* Strider Pane (File Tree) - Zellij Style with red border */
+/* Strider Pane (File Tree) - Inside wrapper */
 .strider-pane {
-  width: 250px;
-  border-right: 2px solid #ff0044;
+  width: 100%;
   padding: 12px 16px;
   font-size: 13px;
   overflow-y: auto;
-  flex-shrink: 0;
+  flex: 1;
   color: #888;
   background: rgba(10, 10, 14, 0.3);
   display: flex;
@@ -284,14 +186,14 @@
 }
 
 .tree-dir {
-  color: #aaff00;
+  color: #ff8c00;
   padding: 2px 4px;
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .tree-dir:hover {
-  background: rgba(170, 255, 0, 0.1);
+  background: rgba(255, 140, 0, 0.1);
 }
 
 .tree-file {
@@ -335,14 +237,13 @@
   color: #aaff00;
 }
 
-/* Terminal Pane with yellow border */
+/* Terminal Pane - Inside wrapper */
 .terminal-pane {
   flex: 1;
   display: flex;
   flex-direction: column;
   padding: 16px 24px;
   overflow: hidden;
-  border-left: 2px solid #aaff00;
   background: rgba(10, 10, 14, 0.3);
   font-family: 'JetBrains Mono Nerd', var(--font-mono), 'JetBrains Mono', monospace;
 }
@@ -453,11 +354,10 @@
     width: 92vw;
     height: 75vh;
   }
-  .pane-header.strider-header {
+  .strider-pane-wrapper {
     width: 200px;
   }
   .strider-pane {
-    width: 200px;
     font-size: 12px;
     padding: 10px 12px;
   }
@@ -470,11 +370,10 @@
 }
 
 @media (max-width: 768px) {
-  .pane-header.strider-header {
+  .strider-pane-wrapper {
     width: 160px;
   }
   .strider-pane {
-    width: 160px;
     font-size: 11px;
     padding: 8px 10px;
   }
@@ -496,11 +395,10 @@
     width: 96vw;
     height: 80vh;
   }
-  .pane-header.strider-header {
+  .strider-pane-wrapper {
     width: 120px;
   }
   .strider-pane {
-    width: 120px;
     font-size: 10px;
     padding: 6px 8px;
   }
@@ -517,36 +415,34 @@
     font-size: 11px;
     line-height: 1.4;
   }
-  .session-name {
-    display: none;
-  }
-  .tab-container {
-    flex: 1;
-  }
-  .bar-right {
+  .terminal-title-text {
     font-size: 10px;
   }
 }
 
 /* Scrollbar styling */
 .terminal-output::-webkit-scrollbar,
-.strider-pane::-webkit-scrollbar {
+.strider-pane::-webkit-scrollbar,
+.strider-pane-wrapper::-webkit-scrollbar {
   width: 6px;
 }
 
 .terminal-output::-webkit-scrollbar-track,
-.strider-pane::-webkit-scrollbar-track {
+.strider-pane::-webkit-scrollbar-track,
+.strider-pane-wrapper::-webkit-scrollbar-track {
   background: rgba(10, 10, 14, 0.5);
 }
 
 .terminal-output::-webkit-scrollbar-thumb,
-.strider-pane::-webkit-scrollbar-thumb {
+.strider-pane::-webkit-scrollbar-thumb,
+.strider-pane-wrapper::-webkit-scrollbar-thumb {
   background: #aaff00;
   border-radius: 3px;
 }
 
 .terminal-output::-webkit-scrollbar-thumb:hover,
-.strider-pane::-webkit-scrollbar-thumb:hover {
+.strider-pane::-webkit-scrollbar-thumb:hover,
+.strider-pane-wrapper::-webkit-scrollbar-thumb:hover {
   background: #ff0044;
 }
 
