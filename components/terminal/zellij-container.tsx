@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { Terminal } from "./terminal"
 import { FileTree } from "./file-tree"
-import { StarfieldBackground } from "./starfield-background"
+import { CosmicNetworkBackground } from "./cosmic-network-background"
 import { GuiFrontend } from "../gui/gui-frontend"
 
 type ViewMode = "SYS_ADMIN" | "CLIENT_GUI" | "BOOTING"
@@ -12,7 +12,7 @@ export function ZellijContainer() {
   const [viewMode, setViewMode] = useState<ViewMode>("SYS_ADMIN")
   const [currentTime, setCurrentTime] = useState("")
 
-  // Digital clock - HH:MM:SS PST
+  // Digital clock - HH_MM_SS PST
   useEffect(() => {
     const updateClock = () => {
       const now = new Date()
@@ -70,44 +70,34 @@ export function ZellijContainer() {
   // Terminal Mode (SYS_ADMIN) - Default
   return (
     <div className="zellij-app">
-      <StarfieldBackground />
+      <CosmicNetworkBackground />
 
-      {/* Top System Bar - Clock */}
+      {/* Top System Bar - Clock (right aligned) */}
       <div className="system-bar top">
         <span className="clock">{currentTime} PST</span>
       </div>
 
       {/* Zellij Terminal Container */}
       <div className="zellij">
-        {/* Top Black Bar - Zellij Style */}
+        {/* Top Black Bar - Clean Style */}
         <div className="zellij-top-bar">
-          <span className="session-name">Zellij (croda-portfolio)</span>
-          <div className="tab-container">
-            <span className="tab active">
-              <span className="tab-icon">Tab #1</span>
-              <span className="tab-name">strider</span>
-            </span>
-          </div>
-          <span className="bar-right">Alt &lt;[]&gt; <span className="base-badge">BASE</span></span>
+          <span className="terminal-title-text">Terminal (c.Rod_dev_profile)</span>
+          <button className="gui-boot-btn" onClick={handleBootGui} title="Boot into GUI mode">
+            [ INIT_GUI ]
+          </button>
         </div>
 
-        {/* Pane Headers */}
-        <div className="pane-headers">
-          <div className="pane-header strider-header">
-            <span className="pane-label">strider</span>
-          </div>
-          <div className="pane-header terminal-header">
-            <span className="pane-label">Pane #1</span>
-          </div>
-        </div>
-
-        {/* Main Body */}
+        {/* Main Body with Bordered Panes */}
         <div className="zellij-body">
-          <FileTree onCommand={() => {}} />
-          <Terminal onBootGui={handleBootGui} />
+          <div className="strider-pane-wrapper">
+            <FileTree onCommand={() => {}} />
+          </div>
+          <div className="terminal-pane-wrapper">
+            <Terminal onBootGui={handleBootGui} />
+          </div>
         </div>
 
-        {/* Bottom Black Bar - Zellij Style */}
+        {/* Bottom Black Bar - Clean Style */}
         <div className="zellij-bottom-bar">
           <div className="shortcuts">
             <span className="shortcut">Ctrl + <span className="key">&lt;q&gt;</span> LOCK</span>
@@ -119,10 +109,6 @@ export function ZellijContainer() {
             <span className="shortcut"><span className="key">&lt;o&gt;</span> SESSION</span>
             <span className="shortcut"><span className="key">&lt;q&gt;</span> QUIT</span>
           </div>
-          <button className="gui-boot-btn" onClick={handleBootGui} title="Boot into GUI mode">
-            [ INIT_GUI ]
-          </button>
-          <span className="bar-right">Alt + &lt;[]&gt; <span className="base-badge">BASE</span></span>
         </div>
       </div>
     </div>
